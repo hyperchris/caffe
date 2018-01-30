@@ -2,6 +2,31 @@
 
 By Vicky Kalogeiton, Philippe Weinzaepfel, Vittorio Ferrari, Cordelia Schmid 
 
+*Mod by XC*
+
+## What's new 
+The original version doesn't support external dataset or any videos, and cannot visualize the result. I also fixed some bugs in the introduction and the code. 
+
+### Workflow
+- Follow the installation guide to install
+- In `./data/ANY/`, create two dirs `Flow/` and `Frames/`. Place optical flow images and video frames into the folders.
+  - The two folders must have same number of images
+  - Under each folder, the format is action/video_name/images.png
+  - Use [this repo](https://github.com/hyperchris/pyflow) to generate both Brox OF and frames from your videos
+- Edit `./cache/ANY-GT.pkl` to specify the data format. I'll automate the pkl generation in next version. Here's the pkl format (in python):
+  - labels: [act1, act2, ...]
+  - gttubes: []
+  - nframes: number of frames for each folder : {vid_name : frame_size} 
+  - train_videos: [['vid_name'], [], []]  - three parts
+  - test_videos: same as above
+  - resolution: {vid_name : (hei, wid)}
+- Follow the train/test instruction below
+- When finish last step of test, use this to visualize:
+```
+    python visualize.py --tube_src results/ACT-detector/ANY/[action]/[name].pkl --frame_src data/ANY/Frames/[action]/[name]/
+```
+
+
 ## Introduction
 
 The ACtion Tubelet detector (ACT-detector) is a framework for action localization. 
@@ -67,11 +92,15 @@ If you find ACT-detector useful in your research, please cite:
   ```Shell
   # Modify Makefile.config according to your Caffe installation.
   cp Makefile.config.example Makefile.config
-  make -j8
+  mkdir build && cd build
+  cmake ..
+  make -j
+
   # Make sure to include $CAFFE_ROOT/python to your PYTHONPATH.
+  
+  # (Optional)
   make py
   make test -j8
-  # (Optional)
   make runtest -j8
   ```
 
@@ -193,3 +222,4 @@ For all cases `${dataset_name}` can be: `UCFSports`, `JHMDB`, `JHMDB2`, `JHMDB3`
 
 This will create a folder in `models/ACT-detector/` called `generated_${dataset_name}` containing the `deploy_${modality}.prototxt`, `train_${modality}.prototxt` and `solver_${modality}.prototxt`, where `${modality}` is `RGB` or `FLOW5`. 
 Note that you need to modify the `ct-detector-scripts/Dataset.py` file to contain your dataset.        
+
