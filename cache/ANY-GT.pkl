@@ -50,9 +50,9 @@ p24
 sS'nframes'
 p26
 (dp27
-S'walk/action_test'
+S'walk/kestrel'
 p28
-I258
+I450
 ssS'train_videos'
 p29
 (lp30

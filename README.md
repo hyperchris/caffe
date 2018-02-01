@@ -13,13 +13,14 @@ The original version doesn't support external dataset or any videos, and cannot 
   - The two folders must have same number of images
   - Under each folder, the format is action/video_name/images.png
   - Use [this repo](https://github.com/hyperchris/pyflow) to generate both Brox OF and frames from your videos
-- Edit `./cache/ANY-GT.pkl` to specify the data format. I'll automate the pkl generation in next version. Here's the pkl format (in python):
+- Edit `./cache/ANY-GT.pkl` to specify the data format. You can use `pkl_io.py` to generate your pkl. I'll automate the process in next version. Here's the pkl format (in python):
   - labels: [act1, act2, ...]
   - gttubes: []
   - nframes: number of frames for each folder : {vid_name : frame_size} 
   - train_videos: [['vid_name'], [], []]  - three parts
   - test_videos: same as above
   - resolution: {vid_name : (hei, wid)}
+- In `./models/ACT-detector/ANY/`, place your caffe models there (for both flow and rgb).
 - Follow the train/test instruction below
 - When finish last step of test, use this to visualize:
 ```

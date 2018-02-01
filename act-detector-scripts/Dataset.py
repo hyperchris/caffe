@@ -5,7 +5,7 @@ import cPickle as pickle
 from PIL import Image
 
 CAFFE_PATH = os.path.dirname(os.path.dirname(__file__))
-ROOT_DATASET_PATH = "/path/to/datasets/"  # CHANGEME
+ROOT_DATASET_PATH = "data/"  # CHANGEME
 # If you use the ACT-detector scripts to download the action localization datasets, for instance UCF-Sports:
 # ROOT_DATASET_PATH = CAFFE_PATH + "/data/UCFSports/"
 
@@ -22,7 +22,7 @@ class TubeDataset(object):
         gttubes: dictionary that contains the gt tubes for each video. Gttubes are dictionary that associates from each index of label, a list of tubes. A tube is a numpy array with nframes rows and 5 columns, <frame number> <x1> <y1> <x2> <y2>.
     """
     def __init__(self, dname, split=1):
-        assert dname in ['UCFSports','JHMDB','UCF101'], "Unknown dataset name"
+        assert dname in ['UCFSports','JHMDB','UCF101', 'ANY'], "Unknown dataset name"
         self.NAME = dname
         self.SPLIT = split
 
@@ -79,6 +79,22 @@ class UCFSports(TubeDataset):
     def frame_format(self, v, i):
         return os.path.join(v, "{:0>6}".format(i))
 
+
+class ANY(TubeDataset):
+    def __init__(self, split=1):
+        assert 1 <= split <= 3, "ANY have 3 splits"
+        super(ANY, self).__init__('ANY', split)
+
+    def imfile(self, v, i):
+        return os.path.join(ROOT_DATASET_PATH, "ANY", "Frames", v, "{:0>5}.png".format(i))
+
+    def flowfile(self, v, i):
+        return os.path.join(ROOT_DATASET_PATH, "ANY", "Flow", v, "{:0>5}.png".format(i))
+
+    def frame_format(self, v, i):
+        return os.path.join(v, "{:0>5}".format(i))
+
+
 class JHMDB(TubeDataset):
     def __init__(self, split=1):
         assert 1 <= split <= 3, "JHMDB have 3 splits"
@@ -108,9 +124,10 @@ class UCF101(TubeDataset):
         return os.path.join(v, "{:0>5}".format(i))
 
 def GetDataset(dname):
-    assert dname in ['UCFSports', 'JHMDB', 'JHMDB2', 'JHMDB3', 'UCF101'], "Unknown dataset " + dname
+    assert dname in ['UCFSports', 'JHMDB', 'JHMDB2', 'JHMDB3', 'UCF101', 'ANY'], "Unknown dataset " + dname
 
     if dname == 'UCFSports': return UCFSports()
+    if dname == 'ANY': return ANY()
     if dname == 'JHMDB': return JHMDB()
     if dname == 'JHMDB2': return JHMDB(2)
     if dname == 'JHMDB3': return JHMDB(3)
